@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="select-bar">
+        <select id="className" onchange="listToHTML()">
+          <option value="#">SELECT</option>
+          <option value="all">All</option>
+          <option value=".net">.NET</option>
+          <option value="angular">Angular</option>
+          <option value="java">Java</option>
+          <option value="test">Test</option>
+        </select>
+        <select id="name" onchange="choiceToHTML()"></select>
+      </div>
+      <div class="display-name"></div>
+      <div class="display-button">
+        <button>Confirm</button>
+      </div>
+    </div>
+
+    <style>
+      @media (max-width: 900px) {
+        .select-bar {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+        }
+
+        .display-name {
+          width: 60vw;
+        }
+
+        select {
+          width: 30vw;
+        }
+        .display-button button {
+          width: 50%;
+        }
+      }
+
+      @media (min-width: 900px) {
+        select {
+          width: 13vw;
+        }
+
+        .display-name {
+          width: 26vw;
+        }
+        .display-button button {
+          width: 20%;
+        }
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .select-bar {
+        height: 20%;
+      }
+
+      select {
+        height: 8vh;
+        text-align-last: center;
+        border-radius: 10px;
+      }
+
+      select:hover {
+        border-color: skyblue;
+        border-width: 2px;
+      }
+      .display-name {
+        height: 8vh;
+        border: 1px solid;
+        justify-self: center;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        display: none;
+      }
+      .display-button {
+        display: none;
+        margin-top: 10px;
+        width: 30%;
+        height: 5%;
+        justify-content: center;
+      }
+
+      .display-button button {
+        height: 100%;
+        border-radius: 10px;
+        color: skyblue;
+        background: white;
+      }
+
+      .display-button button:hover {
+        border-color: skyblue;
+        background: skyblue;
+        color: white;
+      }
+    </style>
+    <script>
+      /*Display the final choice onto a separate div element*/
+      const choiceToHTML = () => {
+        let displayBox = document.getElementsByClassName("display-name")[0];
+        let displayButton = document.getElementsByClassName(
+          "display-button"
+        )[0];
+        displayBox.innerHTML = "";
+        let selectBox = document.getElementById("name");
+        let job = students[selectBox.value - 1].className;
+        if (job !== null) {
+          let name = selectBox.options[selectBox.selectedIndex].text;
+          displayBox.style.display = "block";
+          displayBox.style.display = "flex";
+          displayButton.style.display = "block";
+          displayButton.style.display = "flex";
+          displayBox.innerHTML =
+            "<div>" + "Choice: " + name + " - " + job + " Developer" + "</div>";
+        }
+      };
+
+      /*Render HTML select options from search results*/
+      const listToHTML = () => {
+        let selectElement = document.getElementById("name");
+        selectElement.innerHTML = "";
+        let searchKey = document.getElementById("className").value;
+        let searchList = searchStudents(students, searchKey);
+
+        for (student of searchList) {
+          selectElement.innerHTML +=
+            "<option value=" + student[0] + ">" + student[1] + "</option>";
+        }
+      };
+
+      /*Perform binary search on sorted student list*/
+      const findSearchArea = (list, searchKey) => {
+        let startIdx = 0;
+        let endIdx = list.length - 1;
+        while (true) {
+          let searchIdx = Math.floor((startIdx + endIdx) / 2);
+          if (list[searchIdx].className === searchKey) {
+            return searchIdx;
+          }
+          if (list[startIdx].className === searchKey) {
+            return startIdx;
+          }
+          if (list[endIdx].className === searchKey) {
+            return endIdx;
+          }
+          if (searchIdx === 0 || searchIdx === list.length - 1) {
+            return null;
+          }
+          if (list[searchIdx].className < searchKey) {
+            startIdx = searchIdx;
+          } else if (list[searchIdx].className > searchKey) {
+            endIdx = searchIdx;
+          }
+        }
+      };
+
+      /*Search student list backward and forward from the index found in findSearchArea*/
+      const searchStudents = (list, searchKey) => {
+        let results = [];
+
+        if (searchKey === "all") {
+          for (student of list) {
+            results.push([student.id, student.name]);
+          }
+          return results;
+        }
+
+        let searchIdx = findSearchArea(list, searchKey);
+
+        if (searchIdx === null) {
+          results.push(["None", "SELECT AN OPTION"]);
+          return results;
+        }
+
+        for (let i = searchIdx; i >= 0; i--) {
+          if (list[i].className !== searchKey) {
+            break;
+          }
+          results.unshift([list[i].id, list[i].name]);
+        }
+
+        for (let i = searchIdx + 1; i < list.length; i++) {
+          if (list[i].className !== searchKey) {
+            break;
+          }
+          results.push([list[i].id, list[i].name]);
+        }
+        return results;
+      };
+
+      const students = [
+        { id: 1, name: "tran van a", className: ".net" },
+        { id: 2, name: "tran van b", className: ".net" },
+        { id: 3, name: "tran van c", className: ".net" },
+        { id: 4, name: "tran van d", className: ".net" },
+        { id: 5, name: "tran van e", className: ".net" },
+        { id: 6, name: "tran van f", className: ".net" },
+        { id: 7, name: "tran van g", className: ".net" },
+        { id: 8, name: "tran van h", className: ".net" },
+        { id: 9, name: "tran van i", className: ".net" },
+        { id: 10, name: "tran van j", className: "angular" },
+        { id: 11, name: "tran van k", className: "angular" },
+        { id: 12, name: "tran van l", className: "angular" },
+        { id: 13, name: "tran van m", className: "angular" },
+        { id: 14, name: "tran van n", className: "angular" },
+        { id: 15, name: "tran van o", className: "angular" },
+        { id: 16, name: "tran van p", className: "angular" },
+        { id: 17, name: "tran van q", className: "angular" },
+        { id: 18, name: "tran van r", className: "angular" },
+        { id: 19, name: "tran van s", className: "java" },
+        { id: 20, name: "tran van t", className: "java" },
+        { id: 21, name: "tran van u", className: "java" },
+        { id: 22, name: "tran van v", className: "java" },
+        { id: 23, name: "tran van w", className: "java" },
+        { id: 24, name: "tran van x", className: "java" },
+        { id: 25, name: "tran van y", className: "java" },
+        { id: 26, name: "tran van z", className: "java" },
+        { id: 27, name: "tran van aa", className: "test" },
+        { id: 28, name: "tran van ab", className: "test" },
+        { id: 29, name: "tran van ac", className: "test" },
+        { id: 30, name: "tran van ad", className: "test" },
+      ];
+    </script>
+  </body>
+</html>
