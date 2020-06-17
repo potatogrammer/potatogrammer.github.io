@@ -9,7 +9,7 @@
     <div class="container">
       <div class="select-bar">
         <select id="className" onchange="listToHTML()">
-          <option value="#">SELECT</option>
+          <option value="SELECT">SELECT</option>
           <option value="all">All</option>
           <option value=".net">.NET</option>
           <option value="angular">Angular</option>
@@ -135,10 +135,18 @@
         selectElement.innerHTML = "";
         let searchKey = document.getElementById("className").value;
         let searchList = searchStudents(students, searchKey);
-
-        for (student of searchList) {
-          selectElement.innerHTML +=
-            "<option value=" + student[0] + ">" + student[1] + "</option>";
+        let displayBox = document.getElementsByClassName("display-name")[0];
+        let displayButton = document.getElementsByClassName(
+          "display-button"
+        )[0];
+        if (searchKey === "SELECT") {
+          displayBox.style.display = "none";
+          displayButton.style.display = "none";
+        } else {
+          for (student of searchList) {
+            selectElement.innerHTML +=
+              "<option value=" + student[0] + ">" + student[1] + "</option>";
+          }
         }
       };
 
@@ -179,12 +187,12 @@
           return results;
         }
 
-        let searchIdx = findSearchArea(list, searchKey);
-
-        if (searchIdx === null) {
-          results.push(["None", "SELECT AN OPTION"]);
+        if (searchKey === "SELECT") {
+          results.push(["None", null]);
           return results;
         }
+
+        let searchIdx = findSearchArea(list, searchKey);
 
         for (let i = searchIdx; i >= 0; i--) {
           if (list[i].className !== searchKey) {
