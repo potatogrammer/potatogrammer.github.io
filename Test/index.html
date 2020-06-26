@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div id="container" count="0"></div>
+    <button onclick="addSelection()">Add</button>
+
+    <script>
+      let container = document.getElementById("container");
+      let count = parseInt(container.getAttribute("count"));
+      let lastCount = count;
+      container.value = 0;
+      const addSelection = () => {
+        count += 1;
+        renderSelection();
+      };
+
+      const removeSelection = () => {
+        count -= 1;
+        renderSelection();
+      };
+
+      const renderSelection = () => {
+        container.innerHTML = "";
+        for (let i = 0; i < count; i++) {
+          container.innerHTML += `<div class="selectBar">
+          <select id="${i}" onchange="listToHTML(${i})">${createOption()}</select>
+          <div id="choice${i}"></div>
+          <button onclick="removeSelection()">Remove</button>
+          </div>`;
+        }
+      };
+
+      const listToHTML = (num) => {
+        let choice = document.getElementById(num);
+        let choiceInfo = document.getElementById("choice" + num);
+        let searchKey = choice.value;
+        let info = null;
+
+        choiceInfo.innerText = "";
+
+        for (item of data) {
+          if (item.name === searchKey) {
+            info = item;
+            break;
+          }
+        }
+
+        choiceInfo.innerText += `value1: ${info.value1}, value2: ${info.value2}, value 3: ${info.value3}`;
+      };
+
+      const createOption = () => {
+        let options = "";
+        for (item of data) {
+          options += `<option value="${item.name}">${item.name}</option>`;
+        }
+        return options;
+      };
+
+      const data = [
+        { name: "A", value1: "1", value2: "1", value3: "1" },
+        { name: "B", value1: "2", value2: "2", value3: "2" },
+        { name: "C", value1: "3", value2: "3", value3: "3" },
+        { name: "D", value1: "4", value2: "4", value3: "4" },
+        { name: "E", value1: "5", value2: "5", value3: "5" },
+      ];
+    </script>
+  </body>
+</html>
